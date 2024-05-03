@@ -1,16 +1,35 @@
 import React, { useState } from "react";
-//import { HiOutlineMail, HiOutlineKey } from '@heroicons/react/24/solid';
-import { EnvelopeIcon, KeyIcon } from "@heroicons/react/24/solid";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = () => {
+import { EnvelopeIcon, KeyIcon } from "@heroicons/react/24/solid";
+import AuthAPI from "../apis/auth";
+
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
+
+  const authUser = new AuthAPI();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Add authentication logic here (mock or real)
-    if (email === "user@example.com" && password === "password") {
+    // setToken("this is a test token");
+    // navigate("/", { replace: true });
+    authUser.login(email, password).then((res) => {
+      if (res.code === 200) {
+        // const data = res.data;
+        console.log(res.data);
+        setToken(res.data);
+        navigate("/", { replace: true });
+      } else {
+        console.log(res.message);
+      }
+    });
+    if (email === "abc@abc.com" && password === "password") {
       // Successful login
       console.log("Login successful");
     } else {
@@ -22,7 +41,7 @@ const Login: React.FC = () => {
     <div className="flex justify-center items-center h-screen">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/3"
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full min-w-130"
       >
         <div className="mb-4">
           <EnvelopeIcon className="h-6 w-6 text-blue-500" />
@@ -65,7 +84,7 @@ const Login: React.FC = () => {
         {error && <p className="text-red-500 text-xs italic">{error}</p>}
         <div className="flex items-center justify-between">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
             Sign In
@@ -74,6 +93,4 @@ const Login: React.FC = () => {
       </form>
     </div>
   );
-};
-
-export default Login;
+}

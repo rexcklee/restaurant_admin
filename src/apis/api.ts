@@ -19,19 +19,32 @@ class API {
 
   protected async get(
     path: string,
-    isProtected: boolean
+    isProtected: boolean = false
   ): Promise<DataResponse> {
     // Utilizing apiCall method to fetch data
-    return this.apiCall("GET", path, isProtected);
+    return this.apiCall("GET", path, {}, isProtected);
+  }
+
+  protected async post(
+    path: string,
+    request_data: object,
+    isProtected: boolean = false
+  ): Promise<DataResponse> {
+    // Utilizing apiCall method to fetch data
+    return this.apiCall("POST", path, request_data, isProtected);
   }
 
   private async apiCall(
     method: string,
     path: string,
-    //request_data: any,
+    request_data: object,
     isProtected: boolean
   ): Promise<DataResponse> {
-    const url = `${this.apiHost}${path}`;
+    if (path === "") throw new Error("path is empty");
+
+    const request_path = isProtected ? `/admin/${path}` : `/${path}`;
+    const url = `${this.apiHost}${request_path}`;
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       Authorization: "",
@@ -43,13 +56,18 @@ class API {
       headers.Authorization = token;
     }
 
-    return fetch(url, {
+    const fetchOptions: any = {
       method: method,
       headers: headers,
-      //body: JSON.stringify(request_data),
-    })
+    };
+
+    if (method !== "GET") {
+      fetchOptions.body = JSON.stringify(request_data);
+    }
+
+    return fetch(url, fetchOptions)
       .then((res) => res.json())
-      .then((res) => {
+      .then((res: DataResponse) => {
         if (res.code === 200) {
           return res;
         } else {

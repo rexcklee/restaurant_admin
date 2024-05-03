@@ -1,36 +1,51 @@
 import React, { useState, useEffect } from "react";
 import AdminUserAPI, { AdminUser } from "../apis/user";
 import UserTable from "../components/userTable";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [usersData, setUserData] = useState<AdminUser[] | null>(null);
 
   const adminUser = new AdminUserAPI();
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setToken(null);
+    navigate("/", { replace: true });
+  };
 
   useEffect(() => {
-    // Run api.get when the component mounts
     adminUser
       .adminUserList()
       .then((response) => {
-        // Handle the response here if needed
         setUserData(response.data);
         console.log(response);
       })
       .catch((error) => {
-        // Handle errors here if needed
         console.error(error);
       });
   }, []);
 
   return (
-    <div>
+    <>
       <p className="text-3xl font-bold ">Home page</p>
-      {usersData && (
-        <div>
-          <p>Number of admin: {usersData.length}</p>
-          <UserTable usersData={usersData} />
-        </div>
-      )}
-    </div>
+      <div className="flex justify-center items-center">
+        {usersData && (
+          <div>
+            <p>Number of admin: {usersData.length}</p>
+            <UserTable usersData={usersData} />
+          </div>
+        )}
+      </div>
+      <button
+        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit"
+        onClick={handleLogout}
+      >
+        Log out
+      </button>
+    </>
   );
 }

@@ -8,9 +8,9 @@ interface UserTableProps {
 
 const TABLE_HEAD = ["First Name", "Last Name", "Is admin", ""];
 
-const UserTable: React.FC<UserTableProps> = ({ usersData }) => {
+export default function UserTable(props: UserTableProps) {
   return (
-    <Card className="m-4 overflow-x-auto">
+    <Card className="overflow-x-auto w-full">
       <table className="table-auto text-left">
         <thead>
           <tr>
@@ -31,8 +31,8 @@ const UserTable: React.FC<UserTableProps> = ({ usersData }) => {
           </tr>
         </thead>
         <tbody>
-          {usersData.map((user, index) => {
-            const isLast = index === usersData.length - 1;
+          {props.usersData.map((user, index) => {
+            const isLast = index === props.usersData.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
@@ -82,32 +82,4 @@ const UserTable: React.FC<UserTableProps> = ({ usersData }) => {
       </table>
     </Card>
   );
-};
-
-export default UserTable;
-
-/*<div className="overflow-x-auto">
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">First Name</th>
-            <th className="px-4 py-2">Last Name</th>
-            <th className="px-4 py-2">Is Superadmin</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usersData.map((user, index) => (
-            <tr
-              key={index}
-              className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
-            >
-              <td className="border px-4 py-2">{user.first_name}</td>
-              <td className="border px-4 py-2">{user.last_name}</td>
-              <td className="border px-4 py-2">
-                {user.is_superadmin ? "Yes" : "No"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>*/
+}
