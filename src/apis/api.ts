@@ -71,6 +71,9 @@ class API {
         if (res.code === 200) {
           return res;
         } else {
+          if (res.code === 401) {
+            return res;
+          }
           throw new Error("API call failed");
         }
       });

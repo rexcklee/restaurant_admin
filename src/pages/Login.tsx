@@ -26,15 +26,16 @@ export default function Login() {
         setToken(res.data);
         navigate("/", { replace: true });
       } else {
+        setError("Invalid email or password");
         console.log(res.message);
       }
     });
-    if (email === "abc@abc.com" && password === "password") {
-      // Successful login
-      console.log("Login successful");
-    } else {
-      setError("Invalid email or password");
-    }
+    // if (email === "abc@abc.com" && password === "password") {
+    //   // Successful login
+    //   console.log("Login successful");
+    // } else {
+    //   setError("Invalid email or password");
+    // }
   };
 
   return (
