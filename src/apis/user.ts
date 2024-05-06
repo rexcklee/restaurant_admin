@@ -15,6 +15,6 @@ export interface AdminUser {
 
 export default class AdminUserAPI extends API {
   public async adminUserList(): Promise<DataResponse> {
-    return this.get("admin_users", false);
+    return this.get("admin_users", true);
   }
 }

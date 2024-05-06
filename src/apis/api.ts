@@ -30,7 +30,6 @@ class API {
     request_data: object,
     isProtected: boolean = false
   ): Promise<DataResponse> {
-    // Utilizing apiCall method to fetch data
     return this.apiCall("POST", path, request_data, isProtected);
   }
 
@@ -42,8 +41,10 @@ class API {
   ): Promise<DataResponse> {
     if (path === "") throw new Error("path is empty");
 
-    const request_path = isProtected ? `/admin/${path}` : `/${path}`;
-    const url = `${this.apiHost}${request_path}`;
+    //const request_path = isProtected ? `/admin/${path}` : `/${path}`;
+    //const url = `${this.apiHost}${request_path}`;
+
+    const url = `${this.apiHost}/${path}`;
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -53,7 +54,7 @@ class API {
     if (isProtected) {
       const token = this.getToken();
       if (token === "") throw new Error("Token is empty");
-      headers.Authorization = token;
+      headers.Authorization = "Bearer " + token;
     }
 
     const fetchOptions: any = {
@@ -81,7 +82,8 @@ class API {
 
   // Method getToken needs to be defined
   private getToken(): string {
-    return "";
+    const token = localStorage.getItem("token");
+    return token || "";
   }
 }
 

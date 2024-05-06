@@ -21,7 +21,6 @@ export default function Home() {
       .adminUserList()
       .then((response) => {
         setUserData(response.data);
-        console.log(response);
       })
       .catch((error) => {
         console.error(error);

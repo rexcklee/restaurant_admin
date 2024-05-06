@@ -16,13 +16,9 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add authentication logic here (mock or real)
-    // setToken("this is a test token");
-    // navigate("/", { replace: true });
+
     authUser.login(email, password).then((res) => {
       if (res.code === 200) {
-        // const data = res.data;
-        console.log(res.data);
         setToken(res.data);
         navigate("/", { replace: true });
       } else {
@@ -30,12 +26,6 @@ export default function Login() {
         console.log(res.message);
       }
     });
-    // if (email === "abc@abc.com" && password === "password") {
-    //   // Successful login
-    //   console.log("Login successful");
-    // } else {
-    //   setError("Invalid email or password");
-    // }
   };
 
   return (
