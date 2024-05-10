@@ -8,47 +8,45 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/solid";
+import ProductAPI, { Product } from "../apis/product";
 
 const TABLE_HEAD = [
   "ID",
-  "First Name",
-  "Last Name",
-  "Mobile",
-  "Email",
-
-  "Is admin",
-  "Last Login",
+  "Product Name",
+  "Product Description",
+  "Price",
+  "Category",
   "Action",
 ];
 
-interface UserTableComponentProps {
-  usersData: AdminUser[];
+interface ProductTableComponentProps {
+  productsData: Product[];
   tableUpdate: () => void; // Define tableUpdate as a function prop that takes no arguments and returns void
 }
 
-export default function UserTable(props: UserTableComponentProps) {
-  const [editableUserId, setEditableUserId] = useState<number | null>(null);
-  const [editableUserData, setEditableUserData] = useState<AdminUser | null>(
+export default function ProductTable(props: ProductTableComponentProps) {
+  const [editableProductId, setEditableProductId] = useState<number | null>(
     null
   );
+  const [editableProductData, setEditableProductData] =
+    useState<Product | null>(null);
 
-  const adminUser = new AdminUserAPI();
+  const product = new ProductAPI();
 
-  const handleEditClick = (userData: AdminUser) => {
-    setEditableUserId(userData.admin_id);
-    setEditableUserData(userData);
+  const handleEditClick = (productData: Product) => {
+    setEditableProductId(productData.product_id);
+    setEditableProductData(productData);
   };
 
   const handleSaveClick = () => {
-    console.log(editableUserData);
-    adminUser.updateAdminUser(editableUserData!);
-    setEditableUserId(null);
+    product.updateProduct(editableProductData!);
+    setEditableProductId(null);
     handleChildChange();
     // Add logic to save the edited data
   };
 
-  const handleDeleteClick = (admin_id: number) => {
-    adminUser.deleteAdminUser(admin_id);
+  const handleDeleteClick = (product_id: number) => {
+    product.deleteProduct(product_id);
 
     handleChildChange();
     // Add logic to save the edited data
@@ -81,34 +79,31 @@ export default function UserTable(props: UserTableComponentProps) {
           </tr>
         </thead>
         <tbody>
-          {props.usersData.map((user, index) => {
-            const isLast = index === props.usersData.length - 1;
+          {props.productsData.map((product, index) => {
+            const isLast = index === props.productsData.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
-            const mysqlDateTime = user.last_login ? user.last_login : "";
-            const date = new Date(mysqlDateTime);
-
             return (
-              <tr key={user.admin_id}>
+              <tr key={product.product_id}>
                 <td className={classes}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {user.admin_id}
+                    {product.product_id}
                   </Typography>
                 </td>
                 <td className={classes}>
-                  {editableUserId === user.admin_id ? (
+                  {editableProductId === product.product_id ? (
                     <input
                       className="w-20 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
                       type="text"
-                      value={editableUserData!.first_name}
+                      value={editableProductData!.product_name}
                       onChange={(e) => {
-                        setEditableUserData((prevUserData) => ({
-                          ...prevUserData!,
-                          first_name: e.target.value,
+                        setEditableProductData((prevProductData) => ({
+                          ...prevProductData!,
+                          product_name: e.target.value,
                         }));
                       }}
                     />
@@ -118,20 +113,20 @@ export default function UserTable(props: UserTableComponentProps) {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {user.first_name}
+                      {product.product_name}
                     </Typography>
                   )}
                 </td>
                 <td className={classes}>
-                  {editableUserId === user.admin_id ? (
+                  {editableProductId === product.product_id ? (
                     <input
                       className="w-20 border border-orange-300 rounded-md px-1 focus:outline-none focus:border-blue-500"
                       type="text"
-                      value={editableUserData!.last_name}
+                      value={editableProductData!.product_description}
                       onChange={(e) => {
-                        setEditableUserData((prevUserData) => ({
-                          ...prevUserData!,
-                          last_name: e.target.value,
+                        setEditableProductData((prevProductData) => ({
+                          ...prevProductData!,
+                          product_description: e.target.value,
                         }));
                       }}
                     />
@@ -141,22 +136,24 @@ export default function UserTable(props: UserTableComponentProps) {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {user.last_name}
+                      {product.product_description}
                     </Typography>
                   )}
                 </td>
                 <td className={classes}>
-                  {editableUserId === user.admin_id ? (
+                  {editableProductId === product.product_id ? (
                     <input
                       className="w-20 border border-orange-300 rounded-md px-1 focus:border-blue-500"
                       type="text"
                       value={
-                        editableUserData!.mobile ? editableUserData!.mobile : ""
+                        editableProductData!.product_price
+                          ? editableProductData!.product_price
+                          : 0
                       }
                       onChange={(e) => {
-                        setEditableUserData((prevUserData) => ({
-                          ...prevUserData!,
-                          mobile: e.target.value,
+                        setEditableProductData((prevProductData) => ({
+                          ...prevProductData!,
+                          product_price: parseFloat(e.target.value),
                         }));
                       }}
                     />
@@ -166,22 +163,24 @@ export default function UserTable(props: UserTableComponentProps) {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {user.mobile}
+                      {product.product_price}
                     </Typography>
                   )}
                 </td>
                 <td className={classes}>
-                  {editableUserId === user.admin_id ? (
+                  {editableProductId === product.product_id ? (
                     <input
                       className="w-32 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
                       type="text"
                       value={
-                        editableUserData!.email ? editableUserData!.email : ""
+                        editableProductData!.category_id
+                          ? editableProductData!.category_id
+                          : 0
                       }
                       onChange={(e) => {
-                        setEditableUserData((prevUserData) => ({
-                          ...prevUserData!,
-                          email: e.target.value,
+                        setEditableProductData((prevProductData) => ({
+                          ...prevProductData!,
+                          category_id: parseInt(e.target.value),
                         }));
                       }}
                     />
@@ -191,54 +190,16 @@ export default function UserTable(props: UserTableComponentProps) {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {user.email}
+                      {product.category_id}
                     </Typography>
                   )}
-                </td>
-                <td className={`${classes} flex justify-center items-center`}>
-                  {editableUserId === user.admin_id ? (
-                    <Checkbox
-                      // label="Auto"
-                      checked={editableUserData?.is_superadmin ? true : false}
-                      onChange={() =>
-                        setEditableUserData((prevUserData) => ({
-                          ...prevUserData!,
-                          is_superadmin:
-                            prevUserData!.is_superadmin == 0 ? 1 : 0,
-                        }))
-                      }
-                      className="checked:bg-green-300 checked:border-orange-500 border-orange-300"
-                      crossOrigin={undefined}
-                    />
-                  ) : (
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {user.is_superadmin ? (
-                        <CheckCircleIcon className="h-5 w-5 text-green-300" />
-                      ) : (
-                        <XCircleIcon className="h-5 w-5 text-gray-500" />
-                      )}
-                    </Typography>
-                  )}
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {user.last_login ? date.toLocaleString() : ""}
-                  </Typography>
                 </td>
 
                 <td
                   className={`${classes} bg-blue-gray-50/50 flex justify-center items-center`}
                 >
                   <div className="flex space-x-2">
-                    {editableUserId === user.admin_id ? (
+                    {editableProductId === product.product_id ? (
                       <Typography
                         as="a"
                         href="#"
@@ -256,7 +217,7 @@ export default function UserTable(props: UserTableComponentProps) {
                         variant="small"
                         color="blue-gray"
                         className="font-medium"
-                        onClick={() => handleEditClick(user)}
+                        onClick={() => handleEditClick(product)}
                       >
                         <PencilIcon className="h-5 w-5 text-blue-500" />
                       </Typography>
@@ -267,7 +228,7 @@ export default function UserTable(props: UserTableComponentProps) {
                       variant="small"
                       color="blue-gray"
                       className="font-medium"
-                      onClick={() => handleDeleteClick(user.admin_id)}
+                      onClick={() => handleDeleteClick(product.product_id)}
                     >
                       <TrashIcon className="h-5 w-5 text-red-500" />
                     </Typography>

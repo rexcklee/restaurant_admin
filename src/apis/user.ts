@@ -21,4 +21,12 @@ export default class AdminUserAPI extends API {
   public async addAdminUser(newUser: AdminUser): Promise<DataResponse> {
     return this.post("admin_users/add_user", newUser, true);
   }
+
+  public async updateAdminUser(editedUser: AdminUser): Promise<DataResponse> {
+    return this.post("admin_users/update_user", editedUser, true);
+  }
+
+  public async deleteAdminUser(admin_id: number): Promise<DataResponse> {
+    return this.post("admin_users/delete_user", { admin_id: admin_id }, true);
+  }
 }

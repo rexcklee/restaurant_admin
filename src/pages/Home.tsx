@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import AdminUserAPI, { AdminUser } from "../apis/user";
 import UserTable from "../components/userTable";
-import { useAuth } from "../provider/authProvider";
-import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/sidebar";
 import {
   Button,
   Dialog,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
   Typography,
@@ -29,17 +26,19 @@ export default function Home() {
     mobile: "",
   });
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [tableUpdate, setTableUpdate] = useState(false);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
 
   const adminUser = new AdminUserAPI();
 
   const handleSubmit = () => {
-    // setToken(null);
-    // navigate("/", { replace: true });
-    adminUser.addAdminUser(newUserData!);
-    console.log(newUserData);
+    adminUser.addAdminUser(newUserData!).then(() => handleOpen());
+  };
+
+  const handleForceUpdate = () => {
+    setTableUpdate((prev) => !prev); // Toggle the state to force re-render
   };
 
   useEffect(() => {
@@ -51,34 +50,42 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [open, tableUpdate]);
 
   return (
     <>
-      <div className="flex">
+      <div className="flex h-screen bg-blue-gray-50">
         {/* Sidebar on left */}
-        <div className="w-1/5">
+        <div className="w-1/5 min-w-64">
           <Sidebar />
         </div>
         {/* Table in a card on right */}
-        <div className="w-4/5 p-4">
-          <div className="bg-white p-4 shadow-md rounded-md">
+        <div className="w-4/5 p-4 relative overflow-x-auto overflow-y-auto">
+          <div className="bg-white h-full p-4 shadow-md rounded-xl ">
             <p className="text-3xl font-bold ">Admin Users</p>
             <div className="flex justify-center items-center">
               {usersData && (
-                <div className="max-w-full overflow-x-auto">
-                  <p>Number of admin: {usersData.length}</p>
-                  <UserTable usersData={usersData} />
+                <div className="w-full overflow-x-auto">
+                  <div className="flex items-end justify-between">
+                    <p className="text-xl">
+                      Number of admin: {usersData.length}
+                    </p>
+                    <button
+                      className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      type="submit"
+                      onClick={handleOpen}
+                    >
+                      Add User
+                    </button>
+                  </div>
+                  <UserTable
+                    usersData={usersData}
+                    tableUpdate={handleForceUpdate}
+                  />
                 </div>
               )}
             </div>
-            <button
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-              onClick={handleOpen}
-            >
-              Add User
-            </button>
+
             {/* Dialog for Add User */}
             <Dialog
               size="xs"
@@ -86,7 +93,7 @@ export default function Home() {
               handler={handleOpen}
               className="bg-transparent shadow-none"
             >
-              <Card className="mx-auto w-full max-w-[24rem]">
+              <Card className="mx-auto w-full overflow-scroll">
                 <CardBody className="flex flex-col gap-4">
                   <Typography variant="h4" color="blue-gray">
                     Add User
