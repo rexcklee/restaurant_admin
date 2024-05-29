@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminUserAPI, { AdminUser } from "../apis/user";
-import { Card, Checkbox, Typography } from "@material-tailwind/react";
+//import { Card, Checkbox, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Dialog,
+  Card,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Checkbox,
+  Select,
+  Option,
+} from "@material-tailwind/react";
 import {
   DocumentCheckIcon,
   PencilIcon,
@@ -9,10 +21,13 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/solid";
 import ProductAPI, { Product } from "../apis/product";
+import GoogleAPI from "../apis/google";
+import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
 
 const TABLE_HEAD = [
   "ID",
   "Product Name",
+  "Product Image",
   "Product Description",
   "Price",
   "Category",
@@ -28,10 +43,55 @@ export default function ProductTable(props: ProductTableComponentProps) {
   const [editableProductId, setEditableProductId] = useState<number | null>(
     null
   );
+  const [addImageProductId, setAddImageProductId] = useState<number | null>(
+    null
+  );
+  const [productCategoriesData, setProductCategoriesData] = useState<
+    ProductCategory[] | null
+  >(null);
   const [editableProductData, setEditableProductData] =
     useState<Product | null>(null);
-
+  const [value, setValue] = useState<string>("1");
   const product = new ProductAPI();
+  const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const google = new GoogleAPI();
+  const handleOpen = (productData: Product) => {
+    setAddImageProductId(productData.product_id);
+    setEditableProductData(productData);
+    setOpen((cur) => !cur);
+  };
+  const productCategory = new ProductCategoryAPI();
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!files) return;
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+    console.log(files);
+
+    google.uploadImage(formData).then((response) => {
+      console.log(response.data.image_id);
+      console.log(editableProductData);
+      product.updateProductImage({
+        image_id: response.data.image_id,
+        product_id: editableProductData?.product_id!,
+      });
+      setAddImageProductId(null);
+      handleChildChange();
+      setOpen((cur) => !cur);
+    });
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(event.target.files);
+    }
+  };
 
   const handleEditClick = (productData: Product) => {
     setEditableProductId(productData.product_id);
@@ -52,10 +112,38 @@ export default function ProductTable(props: ProductTableComponentProps) {
     // Add logic to save the edited data
   };
 
+  const handleDeleteImage = (currentProduct: Product) => {
+    //TODO - delete image
+    //google.deleteImage(currentProduct.image_id);
+    google.deleteImage(currentProduct.image_id).then((response) => {
+      console.log(response.data);
+      product.updateProductImage({
+        image_id: "",
+        product_id: currentProduct.product_id!,
+      });
+      //setAddImageProductId(null);
+      handleChildChange();
+      // setOpen((cur) => !cur);
+    });
+    // handleChildChange();
+    // Add logic to save the edited data
+  };
+
   const handleChildChange = () => {
     // Perform actions that require re-render in the parent
     props.tableUpdate(); // Call the function passed down from the parent
   };
+
+  useEffect(() => {
+    productCategory
+      .productCategoryList()
+      .then((response) => {
+        setProductCategoriesData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [open]);
 
   return (
     <Card className="overflow-x-auto w-full mt-4 mb-4">
@@ -81,7 +169,9 @@ export default function ProductTable(props: ProductTableComponentProps) {
         <tbody>
           {props.productsData.map((product, index) => {
             const isLast = index === props.productsData.length - 1;
-            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+            const classes = isLast
+              ? "h-20"
+              : "h-20 border-b border-blue-gray-50";
 
             return (
               <tr key={product.product_id}>
@@ -117,6 +207,36 @@ export default function ProductTable(props: ProductTableComponentProps) {
                     </Typography>
                   )}
                 </td>
+
+                <td className="text-center">
+                  {product.image_id != "" ? (
+                    <div className="flex items-center">
+                      <img
+                        className="m-auto block"
+                        src={`https://drive.google.com/thumbnail?id=${product.image_id}&sz=w120`}
+                        alt="Network Image"
+                      />
+                      <Typography
+                        as="a"
+                        href="#"
+                        variant="small"
+                        color="blue-gray"
+                        onClick={() => handleDeleteImage(product)}
+                      >
+                        <XCircleIcon className="h-5 w-5 text-red-500" />
+                      </Typography>
+                    </div>
+                  ) : (
+                    <button
+                      className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      type="submit"
+                      onClick={() => handleOpen(product)}
+                    >
+                      Add Image
+                    </button>
+                  )}
+                </td>
+
                 <td className={classes}>
                   {editableProductId === product.product_id ? (
                     <input
@@ -169,28 +289,49 @@ export default function ProductTable(props: ProductTableComponentProps) {
                 </td>
                 <td className={classes}>
                   {editableProductId === product.product_id ? (
-                    <input
-                      className="w-32 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
-                      type="text"
+                    <Select
+                      label="Category"
                       value={
-                        editableProductData!.category_id
-                          ? editableProductData!.category_id
-                          : 0
+                        editableProductData!.category_id.toString()
+                          ? editableProductData!.category_id.toString()
+                          : "0"
                       }
-                      onChange={(e) => {
+                      onChange={(val) => {
+                        setValue(val!);
                         setEditableProductData((prevProductData) => ({
                           ...prevProductData!,
-                          category_id: parseInt(e.target.value),
+                          category_id: parseInt(val!),
                         }));
                       }}
-                    />
+                    >
+                      {productCategoriesData?.map((productCategory) => (
+                        <Option value={productCategory.category_id.toString()}>
+                          {productCategory.category_name}
+                        </Option>
+                      ))}
+                    </Select>
                   ) : (
+                    // <input
+                    //   className="w-32 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
+                    //   type="text"
+                    //   value={
+                    //     editableProductData!.category_id
+                    //       ? editableProductData!.category_id
+                    //       : 0
+                    //   }
+                    //   onChange={(e) => {
+                    //     setEditableProductData((prevProductData) => ({
+                    //       ...prevProductData!,
+                    //       category_id: parseInt(e.target.value),
+                    //     }));
+                    //   }}
+                    // />
                     <Typography
                       variant="small"
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {product.category_id}
+                      {product.category_name}
                     </Typography>
                   )}
                 </td>
@@ -239,6 +380,42 @@ export default function ProductTable(props: ProductTableComponentProps) {
           })}
         </tbody>
       </table>
+
+      {/* Dialog for Upload Image */}
+      <Dialog
+        size="xs"
+        open={open}
+        handler={handleOpen}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full ">
+          <CardBody className="flex flex-col gap-4">
+            <Typography variant="h4" color="blue-gray">
+              Upload Image
+            </Typography>
+
+            <form
+              id="uploadForm"
+              onSubmit={handleFormSubmit}
+              encType="multipart/form-data"
+            >
+              <div className="flex items-center justify-center">
+                <input
+                  type="file"
+                  name="file"
+                  id="fileInput"
+                  // multiple
+                  onChange={handleFileChange}
+                />
+                <Button type="submit" disabled={!files}>
+                  Upload
+                </Button>
+              </div>
+              {/* <button type="submit">Upload</button> */}
+            </form>
+          </CardBody>
+        </Card>
+      </Dialog>
     </Card>
   );
 }

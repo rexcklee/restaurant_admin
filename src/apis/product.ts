@@ -4,8 +4,15 @@ export interface Product {
   product_id: number;
   product_name: string;
   product_description: string;
+  image_id: string;
   product_price: number;
   category_id: number;
+  category_name: string;
+}
+
+export interface ProductImageData {
+  product_id: number;
+  image_id: string;
 }
 
 export default class ProductAPI extends API {
@@ -19,6 +26,12 @@ export default class ProductAPI extends API {
 
   public async updateProduct(editedProduct: Product): Promise<DataResponse> {
     return this.post("products/update_product", editedProduct, true);
+  }
+
+  public async updateProductImage(
+    imageData: ProductImageData
+  ): Promise<DataResponse> {
+    return this.post("products/update_product_image", imageData, true);
   }
 
   public async deleteProduct(product_id: number): Promise<DataResponse> {

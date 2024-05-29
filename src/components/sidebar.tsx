@@ -46,6 +46,12 @@ export function Sidebar() {
           </ListItemPrefix>
           Dashboard
         </ListItem>
+        <ListItem onClick={() => handleNavigation("/productCategories")}>
+          <ListItemPrefix>
+            <ShoppingBagIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Categories
+        </ListItem>
         <ListItem onClick={() => handleNavigation("/products")}>
           <ListItemPrefix>
             <ShoppingBagIcon className="h-5 w-5" />

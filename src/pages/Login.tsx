@@ -20,8 +20,8 @@ export default function Login() {
 
     authUser.login(email, password).then((res) => {
       if (res.code === 200) {
-        setToken(res.data);
-        console.log(res.data);
+        setToken(res.data.token);
+        console.log(res.data.currentUser);
         navigate("/", { replace: true });
       } else {
         setError("Invalid email or password");

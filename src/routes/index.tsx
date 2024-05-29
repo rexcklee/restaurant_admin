@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import Home from ".././pages/Home";
 import Login from ".././pages/Login";
 import Products from "../pages/Products";
+import ProductCategories from "../pages/ProductCategories";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -29,6 +30,10 @@ const Routes = () => {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/productCategories",
+          element: <ProductCategories />,
         },
         {
           path: "/products",
