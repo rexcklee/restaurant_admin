@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
-import AdminUserAPI, { AdminUser } from "../apis/user";
-//import { Card, Checkbox, Typography } from "@material-tailwind/react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
   Card,
   CardBody,
-  CardFooter,
   Typography,
-  Input,
-  Checkbox,
   Select,
   Option,
 } from "@material-tailwind/react";
@@ -17,12 +12,11 @@ import {
   DocumentCheckIcon,
   PencilIcon,
   TrashIcon,
-  CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/solid";
 import ProductAPI, { Product } from "../apis/product";
 import GoogleAPI from "../apis/google";
-import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
+import { ProductCategory } from "../apis/product_category";
 
 const TABLE_HEAD = [
   "ID",
@@ -36,6 +30,7 @@ const TABLE_HEAD = [
 
 interface ProductTableComponentProps {
   productsData: Product[];
+  productCategoriesData: ProductCategory[];
   tableUpdate: () => void; // Define tableUpdate as a function prop that takes no arguments and returns void
 }
 
@@ -43,25 +38,19 @@ export default function ProductTable(props: ProductTableComponentProps) {
   const [editableProductId, setEditableProductId] = useState<number | null>(
     null
   );
-  const [addImageProductId, setAddImageProductId] = useState<number | null>(
-    null
-  );
-  const [productCategoriesData, setProductCategoriesData] = useState<
-    ProductCategory[] | null
-  >(null);
+
   const [editableProductData, setEditableProductData] =
     useState<Product | null>(null);
-  const [value, setValue] = useState<string>("1");
+
   const product = new ProductAPI();
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const google = new GoogleAPI();
   const handleOpen = (productData: Product) => {
-    setAddImageProductId(productData.product_id);
     setEditableProductData(productData);
     setOpen((cur) => !cur);
   };
-  const productCategory = new ProductCategoryAPI();
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -81,7 +70,6 @@ export default function ProductTable(props: ProductTableComponentProps) {
         image_id: response.data.image_id,
         product_id: editableProductData?.product_id!,
       });
-      setAddImageProductId(null);
       handleChildChange();
       setOpen((cur) => !cur);
     });
@@ -102,48 +90,27 @@ export default function ProductTable(props: ProductTableComponentProps) {
     product.updateProduct(editableProductData!);
     setEditableProductId(null);
     handleChildChange();
-    // Add logic to save the edited data
   };
 
   const handleDeleteClick = (product_id: number) => {
     product.deleteProduct(product_id);
-
     handleChildChange();
-    // Add logic to save the edited data
   };
 
   const handleDeleteImage = (currentProduct: Product) => {
-    //TODO - delete image
-    //google.deleteImage(currentProduct.image_id);
     google.deleteImage(currentProduct.image_id).then((response) => {
       console.log(response.data);
       product.updateProductImage({
         image_id: "",
         product_id: currentProduct.product_id!,
       });
-      //setAddImageProductId(null);
       handleChildChange();
-      // setOpen((cur) => !cur);
     });
-    // handleChildChange();
-    // Add logic to save the edited data
   };
 
   const handleChildChange = () => {
-    // Perform actions that require re-render in the parent
-    props.tableUpdate(); // Call the function passed down from the parent
+    props.tableUpdate();
   };
-
-  useEffect(() => {
-    productCategory
-      .productCategoryList()
-      .then((response) => {
-        setProductCategoriesData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [open]);
 
   return (
     <Card className="overflow-x-auto w-full mt-4 mb-4">
@@ -172,7 +139,6 @@ export default function ProductTable(props: ProductTableComponentProps) {
             const classes = isLast
               ? "h-20"
               : "h-20 border-b border-blue-gray-50";
-
             return (
               <tr key={product.product_id}>
                 <td className={classes}>
@@ -236,7 +202,6 @@ export default function ProductTable(props: ProductTableComponentProps) {
                     </button>
                   )}
                 </td>
-
                 <td className={classes}>
                   {editableProductId === product.product_id ? (
                     <input
@@ -297,35 +262,20 @@ export default function ProductTable(props: ProductTableComponentProps) {
                           : "0"
                       }
                       onChange={(val) => {
-                        setValue(val!);
+                        //setValue(val!);
                         setEditableProductData((prevProductData) => ({
                           ...prevProductData!,
                           category_id: parseInt(val!),
                         }));
                       }}
                     >
-                      {productCategoriesData?.map((productCategory) => (
+                      {props.productCategoriesData?.map((productCategory) => (
                         <Option value={productCategory.category_id.toString()}>
                           {productCategory.category_name}
                         </Option>
                       ))}
                     </Select>
                   ) : (
-                    // <input
-                    //   className="w-32 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
-                    //   type="text"
-                    //   value={
-                    //     editableProductData!.category_id
-                    //       ? editableProductData!.category_id
-                    //       : 0
-                    //   }
-                    //   onChange={(e) => {
-                    //     setEditableProductData((prevProductData) => ({
-                    //       ...prevProductData!,
-                    //       category_id: parseInt(e.target.value),
-                    //     }));
-                    //   }}
-                    // />
                     <Typography
                       variant="small"
                       color="blue-gray"
@@ -411,7 +361,6 @@ export default function ProductTable(props: ProductTableComponentProps) {
                   Upload
                 </Button>
               </div>
-              {/* <button type="submit">Upload</button> */}
             </form>
           </CardBody>
         </Card>

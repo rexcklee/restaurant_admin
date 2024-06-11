@@ -15,7 +15,6 @@ const TABLE_HEAD = [
   "Last Name",
   "Mobile",
   "Email",
-
   "Is admin",
   "Last Login",
   "Action",

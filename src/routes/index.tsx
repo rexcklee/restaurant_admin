@@ -1,10 +1,12 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { useAuth } from "../provider/authProvider";
 import { ProtectedRoute } from "./ProtectedRoute";
-import Home from ".././pages/Home";
+import Home from "../pages/AdminUsers";
 import Login from ".././pages/Login";
 import Products from "../pages/Products";
 import ProductCategories from "../pages/ProductCategories";
+import AdminUsers from "../pages/AdminUsers";
+import Branches from "../pages/Branches";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -30,6 +32,14 @@ const Routes = () => {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/branches",
+          element: <Branches />,
+        },
+        {
+          path: "/adminUsers",
+          element: <AdminUsers />,
         },
         {
           path: "/productCategories",

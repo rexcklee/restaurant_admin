@@ -3,6 +3,7 @@ import API, { DataResponse } from "./api";
 export interface ProductCategory {
   category_id: number;
   category_name: string;
+  category_sort: number;
 }
 
 export default class ProductCategoryAPI extends API {

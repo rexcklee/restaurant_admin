@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AdminUserAPI, { AdminUser } from "../apis/user";
 import UserTable from "../components/userTable";
 import { Sidebar } from "../components/sidebar";
@@ -13,7 +13,7 @@ import {
   Checkbox,
 } from "@material-tailwind/react";
 
-export default function Home() {
+export default function AdminUsers() {
   const [usersData, setUserData] = useState<AdminUser[] | null>(null);
   const [newUserData, setNewUserData] = useState<AdminUser | null>({
     admin_id: 0,
@@ -93,7 +93,7 @@ export default function Home() {
               handler={handleOpen}
               className="bg-transparent shadow-none"
             >
-              <Card className="mx-auto w-full overflow-scroll">
+              <Card className="mx-auto w-full">
                 <CardBody className="flex flex-col gap-4">
                   <Typography variant="h4" color="blue-gray">
                     Add User

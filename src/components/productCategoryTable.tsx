@@ -1,31 +1,22 @@
 import { useState } from "react";
-//import { Card, Checkbox, Typography } from "@material-tailwind/react";
-import {
-  Button,
-  Dialog,
-  Card,
-  CardBody,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react";
 import {
   DocumentCheckIcon,
   PencilIcon,
   TrashIcon,
-  XCircleIcon,
 } from "@heroicons/react/24/solid";
-import ProductAPI, { Product } from "../apis/product";
-import GoogleAPI from "../apis/google";
+import { Product } from "../apis/product";
 import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
 
-const TABLE_HEAD = ["ID", "Category Name", "Action"];
+const TABLE_HEAD = ["ID", "Category Name", "Sort", "Action"];
 
-interface ProductTableComponentProps {
+interface ProductCategoryTableComponentProps {
   productCategoriesData: ProductCategory[];
   tableUpdate: () => void; // Define tableUpdate as a function prop that takes no arguments and returns void
 }
 
 export default function ProductCategoryTable(
-  props: ProductTableComponentProps
+  props: ProductCategoryTableComponentProps
 ) {
   const [editableCategoryId, setEditableCategoryId] = useState<number | null>(
     null
@@ -35,11 +26,11 @@ export default function ProductCategoryTable(
     useState<ProductCategory | null>(null);
 
   const productCategory = new ProductCategoryAPI();
-  const [open, setOpen] = useState(false);
-  const handleOpen = (productCategoryData: Product) => {
-    setEditableProductCategoryData(productCategoryData);
-    setOpen((cur) => !cur);
-  };
+  //   const [open, setOpen] = useState(false);
+  //   const handleOpen = (productCategoryData: Product) => {
+  //     setEditableProductCategoryData(productCategoryData);
+  //     setOpen((cur) => !cur);
+  //   };
 
   const handleEditClick = (productCategoryData: ProductCategory) => {
     setEditableCategoryId(productCategoryData.category_id);
@@ -57,9 +48,9 @@ export default function ProductCategoryTable(
     handleChildChange();
   };
 
+  // Perform actions that require re-render in the parent
   const handleChildChange = () => {
-    // Perform actions that require re-render in the parent
-    props.tableUpdate(); // Call the function passed down from the parent
+    props.tableUpdate();
   };
 
   return (
@@ -124,7 +115,29 @@ export default function ProductCategoryTable(
                     </Typography>
                   )}
                 </td>
-
+                <td className={classes}>
+                  {editableCategoryId === category.category_id ? (
+                    <input
+                      className="w-20 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
+                      type="text"
+                      value={editableProductCategoryData!.category_sort}
+                      onChange={(e) => {
+                        setEditableProductCategoryData((prevCategoryData) => ({
+                          ...prevCategoryData!,
+                          category_sort: parseInt(e.target.value),
+                        }));
+                      }}
+                    />
+                  ) : (
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {category.category_sort}
+                    </Typography>
+                  )}
+                </td>
                 <td
                   className={`${classes} bg-blue-gray-50/50 flex justify-center items-center`}
                 >

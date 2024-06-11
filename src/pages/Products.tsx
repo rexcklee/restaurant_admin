@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import UserTable from "../components/userTable";
 import { Sidebar } from "../components/sidebar";
 import {
   Button,
@@ -14,7 +13,6 @@ import {
 } from "@material-tailwind/react";
 import ProductAPI, { Product } from "../apis/product";
 import ProductTable from "../components/productTable";
-import GoogleAPI from "../apis/google";
 import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
 
 export default function Products() {
@@ -31,17 +29,13 @@ export default function Products() {
     category_id: 0,
     category_name: "",
   });
-  //const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [tableUpdate, setTableUpdate] = useState(false);
   const [value, setValue] = useState<string>("1");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
 
-  const [files, setFiles] = useState<FileList | null>(null);
-
   const productCategory = new ProductCategoryAPI();
   const product = new ProductAPI();
-  const google = new GoogleAPI();
 
   const handleSubmit = () => {
     product.addProduct(newProductData!).then(() => {
@@ -51,33 +45,6 @@ export default function Products() {
 
   const handleForceUpdate = () => {
     setTableUpdate((prev) => !prev); // Toggle the state to force re-render
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(event.target.files);
-    }
-  };
-
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!files) return;
-
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-    console.log(files);
-
-    google.uploadImage(formData).then((response) => {
-      setNewProductData((prevProductData) => ({
-        ...prevProductData!,
-        image_id: response.data.image_id,
-      }));
-      console.log(response.data);
-    });
   };
 
   useEffect(() => {
@@ -111,27 +78,24 @@ export default function Products() {
           <div className="bg-white p-4 shadow-md rounded-xl ">
             <p className="text-3xl font-bold ">Products</p>
             <div className="flex justify-center items-center">
-              {productsData && (
+              {productsData && productCategoriesData && (
                 <div className="w-full overflow-x-auto">
                   <div className="flex items-end justify-between">
                     <p className="text-xl">
                       Number of product: {productsData.length}
                     </p>
 
-                    {productCategoriesData && (
-                      <>
-                        <button
-                          className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                          type="submit"
-                          onClick={handleOpen}
-                        >
-                          Add Product
-                        </button>
-                      </>
-                    )}
+                    <button
+                      className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      type="submit"
+                      onClick={handleOpen}
+                    >
+                      Add Product
+                    </button>
                   </div>
                   <ProductTable
                     productsData={productsData}
+                    productCategoriesData={productCategoriesData}
                     tableUpdate={handleForceUpdate}
                   />
                 </div>
