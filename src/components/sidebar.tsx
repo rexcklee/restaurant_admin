@@ -64,12 +64,12 @@ export function Sidebar() {
           </ListItemPrefix>
           Products
         </ListItem>
-        <ListItem>
+        <ListItem onClick={() => handleNavigation("/orders")}>
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Inbox
-          <ListItemSuffix>
+          Orders
+          {/* <ListItemSuffix>
             <Chip
               value="14"
               size="sm"
@@ -77,13 +77,19 @@ export function Sidebar() {
               color="blue-gray"
               className="rounded-full"
             />
-          </ListItemSuffix>
+          </ListItemSuffix> */}
         </ListItem>
         <ListItem onClick={() => handleNavigation("/adminUsers")}>
           <ListItemPrefix>
             <UserCircleIcon className="h-5 w-5" />
           </ListItemPrefix>
           Admin Users
+        </ListItem>
+        <ListItem onClick={() => handleNavigation("/customers")}>
+          <ListItemPrefix>
+            <UserCircleIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Customers
         </ListItem>
         <ListItem>
           <ListItemPrefix>

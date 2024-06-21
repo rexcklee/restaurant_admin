@@ -143,6 +143,7 @@ export default function Products() {
 
                   <Input
                     label="Price"
+                    type="number"
                     size="lg"
                     value={newProductData?.product_price || 0}
                     onChange={(e) =>

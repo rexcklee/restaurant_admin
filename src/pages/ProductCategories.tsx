@@ -22,6 +22,7 @@ export default function ProductCategories() {
     useState<ProductCategory | null>({
       category_id: 0,
       category_name: "",
+      category_sort: 0,
     });
   const [tableUpdate, setTableUpdate] = useState(false);
 

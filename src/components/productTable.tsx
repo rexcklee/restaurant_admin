@@ -229,7 +229,7 @@ export default function ProductTable(props: ProductTableComponentProps) {
                   {editableProductId === product.product_id ? (
                     <input
                       className="w-20 border border-orange-300 rounded-md px-1 focus:border-blue-500"
-                      type="text"
+                      type="number"
                       value={
                         editableProductData!.product_price
                           ? editableProductData!.product_price

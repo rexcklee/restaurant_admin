@@ -7,6 +7,8 @@ import Products from "../pages/Products";
 import ProductCategories from "../pages/ProductCategories";
 import AdminUsers from "../pages/AdminUsers";
 import Branches from "../pages/Branches";
+import Customers from "../pages/Customers";
+import Orders from "../pages/Orders";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -48,6 +50,14 @@ const Routes = () => {
         {
           path: "/products",
           element: <Products />,
+        },
+        {
+          path: "/customers",
+          element: <Customers />,
+        },
+        {
+          path: "/orders",
+          element: <Orders />,
         },
         {
           path: "/logout",

@@ -11,10 +11,12 @@ class DataResponse {
 }
 
 class API {
-  apiHost: string = "http://localhost:3001";
+  // apiHost: string = "http://localhost:3001";
+  apiHost: string = "http://157.173.206.251:3006";
 
   constructor() {
-    this.apiHost = "http://localhost:3001";
+    // this.apiHost = "http://localhost:3001";
+    this.apiHost = "http://157.173.206.251:3006";
   }
 
   protected async get(
