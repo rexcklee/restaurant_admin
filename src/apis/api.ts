@@ -12,11 +12,11 @@ class DataResponse {
 
 class API {
   // apiHost: string = "http://localhost:3001";
-  apiHost: string = "http://157.173.206.251:3006";
+  apiHost: string = "https://rexlee.space:444";
 
   constructor() {
     // this.apiHost = "http://localhost:3001";
-    this.apiHost = "http://157.173.206.251:3006";
+    this.apiHost = "https://rexlee.space:444";
   }
 
   protected async get(
