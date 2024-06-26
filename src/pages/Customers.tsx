@@ -57,13 +57,10 @@ export default function Customers() {
   return (
     <>
       <div className="flex h-screen bg-blue-gray-50">
-        {/* Sidebar on left */}
-        <div className="w-1/5 min-w-64">
-          <Sidebar />
-        </div>
+        <Sidebar />
         {/* Table in a card on right */}
-        <div className="w-4/5 p-4 relative overflow-x-auto overflow-y-auto">
-          <div className="bg-white h-full p-4 shadow-md rounded-xl ">
+        <div className="p-4 w-full relative overflow-x-auto overflow-y-auto">
+          <div className="bg-white p-4 shadow-md rounded-xl ">
             <p className="text-3xl font-bold ">Customers</p>
             <div className="flex justify-center items-center">
               {customersData && (

@@ -5,7 +5,6 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
-import { Product } from "../apis/product";
 import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
 
 const TABLE_HEAD = ["ID", "Category Name", "Sort", "Action"];
@@ -26,11 +25,6 @@ export default function ProductCategoryTable(
     useState<ProductCategory | null>(null);
 
   const productCategory = new ProductCategoryAPI();
-  //   const [open, setOpen] = useState(false);
-  //   const handleOpen = (productCategoryData: Product) => {
-  //     setEditableProductCategoryData(productCategoryData);
-  //     setOpen((cur) => !cur);
-  //   };
 
   const handleEditClick = (productCategoryData: ProductCategory) => {
     setEditableCategoryId(productCategoryData.category_id);
@@ -119,8 +113,13 @@ export default function ProductCategoryTable(
                   {editableCategoryId === category.category_id ? (
                     <input
                       className="w-20 border border-orange-300 rounded-md px-1  focus:outline-none focus:border-blue-500"
-                      type="text"
-                      value={editableProductCategoryData!.category_sort}
+                      type="number"
+                      min="0"
+                      value={
+                        editableProductCategoryData!.category_sort
+                          ? editableProductCategoryData!.category_sort
+                          : 0
+                      }
                       onChange={(e) => {
                         setEditableProductCategoryData((prevCategoryData) => ({
                           ...prevCategoryData!,

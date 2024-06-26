@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sidebar } from "../components/sidebar";
-
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import type { TableColumnsType, TableProps } from "antd";
 import {
   Form,
@@ -8,7 +8,6 @@ import {
   InputNumber,
   Popconfirm,
   Select,
-  Space,
   Table,
   Typography,
 } from "antd";
@@ -94,11 +93,6 @@ export default function Orders() {
     null
   );
 
-  //const [tableUpdate, setTableUpdate] = useState(false);
-
-  //const [open, setOpen] = useState(false);
-  //const handleOpen = () => setOpen((cur) => !cur);
-
   const order = new OrderAPI();
 
   const handleSubmit = () => {
@@ -144,82 +138,84 @@ export default function Orders() {
 
   const columns = [
     {
-      title: "order_number",
+      title: "Order#",
       dataIndex: "order_number",
       key: "order_number",
       editable: false,
     },
     {
-      title: "customer_id",
+      title: "Customer#",
       dataIndex: "customer_id",
       key: "customer_id",
       editable: false,
     },
     {
-      title: "order_date",
+      title: "Date",
       dataIndex: "order_date",
       key: "order_date",
       editable: false,
       render: (text: string) => format(new Date(text), "dd-MM-yyyy HH:mm"),
     },
-    { title: "total_amount", dataIndex: "total_amount", key: "total_amount" },
+    { title: "Amount", dataIndex: "total_amount", key: "total_amount" },
     {
-      title: "order_status",
+      title: "Status",
       dataIndex: "order_status",
       key: "order_status",
       editable: true,
     },
     {
-      title: "phone_number",
+      title: "Mobile",
       dataIndex: "phone_number",
       key: "phone_number",
       editable: true,
     },
     {
-      title: "shipping_address",
+      title: "Address",
       dataIndex: "shipping_address",
       key: "shipping_address",
       editable: true,
     },
+    // {
+    //   title: "billing_address",
+    //   dataIndex: "billing_address",
+    //   key: "billing_address",
+    //   editable: true,
+    // },
+    // {
+    //   title: "payment_method",
+    //   dataIndex: "payment_method",
+    //   key: "payment_method",
+    //   editable: true,
+    // },
     {
-      title: "billing_address",
-      dataIndex: "billing_address",
-      key: "billing_address",
-      editable: true,
-    },
-    {
-      title: "payment_method",
-      dataIndex: "payment_method",
-      key: "payment_method",
-      editable: true,
-    },
-    {
-      title: "payment_status",
+      title: "Payment",
       dataIndex: "payment_status",
       key: "payment_status",
       editable: true,
     },
     {
-      title: "comments",
+      title: "Comments",
       dataIndex: "comments",
       key: "comments",
       editable: true,
     },
     {
-      title: "operation",
+      title: "Action",
       dataIndex: "operation",
       render: (_: any, record: Order) => {
         const editable = isEditing(record);
         return editable ? (
-          <span>
+          <span className="flex">
             <Typography.Link
               onClick={() => save(record.key)}
               style={{ marginRight: 8 }}
             >
-              Save
+              <CheckCircleIcon className="h-5 w-5 text-green-300" />
             </Typography.Link>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <a>
+                <XCircleIcon className="h-5 w-5 text-red-300" />
+              </a>
             </Popconfirm>
           </span>
         ) : (
@@ -236,28 +232,28 @@ export default function Orders() {
 
   const expandedRowRender = (record: Order) => {
     const columns: TableColumnsType<OrderItem> = [
-      { title: "Item ID", dataIndex: "order_item_id", key: "order_item_id" },
+      //   { title: "Item ID", dataIndex: "order_item_id", key: "order_item_id" },
       //   { title: "order_number", dataIndex: "order_number", key: "order_number" },
-      { title: "product_id", dataIndex: "product_id", key: "product_id" },
-      { title: "product_name", dataIndex: "product_name", key: "product_name" },
-      { title: "quantity", dataIndex: "quantity", key: "quantity" },
-      { title: "unit_price", dataIndex: "unit_price", key: "unit_price" },
-      { title: "total_price", dataIndex: "total_price", key: "total_price" },
-      {
-        title: "Action",
-        key: "operation",
-        render: () => (
-          <Space size="middle">
-            <a>Pause</a>
-            <a>Stop</a>
-            {/* <Dropdown menu={{ items }}>
-              <a>
-                More
-              </a>
-            </Dropdown> */}
-          </Space>
-        ),
-      },
+      { title: "Product#", dataIndex: "product_id", key: "product_id" },
+      { title: "Product", dataIndex: "product_name", key: "product_name" },
+      { title: "Qty.", dataIndex: "quantity", key: "quantity" },
+      { title: "Unit Price", dataIndex: "unit_price", key: "unit_price" },
+      { title: "Total Price", dataIndex: "total_price", key: "total_price" },
+      //   {
+      //     title: "Action",
+      //     key: "operation",
+      //     render: () => (
+      //       <Space size="middle">
+      //         <a>Pause</a>
+      //         <a>Stop</a>
+      //         {/* <Dropdown menu={{ items }}>
+      //           <a>
+      //             More
+      //           </a>
+      //         </Dropdown> */}
+      //       </Space>
+      //     ),
+      //   },
     ];
 
     return (
@@ -272,7 +268,6 @@ export default function Orders() {
   };
 
   const [form] = Form.useForm();
-  //const [data, setData] = useState(ordersData);
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record: Order) => record.key === editingKey;
@@ -340,12 +335,9 @@ export default function Orders() {
   return (
     <>
       <div className="flex h-screen bg-blue-gray-50">
-        {/* Sidebar on left */}
-        <div className="w-1/5 min-w-64">
-          <Sidebar />
-        </div>
+        <Sidebar />
         {/* Table in a card on right */}
-        <div className="w-4/5 p-4 relative overflow-x-auto overflow-y-auto">
+        <div className="p-4 w-full relative overflow-x-auto overflow-y-auto">
           <div className="bg-white p-4 shadow-md rounded-xl ">
             <p className="text-3xl font-bold ">Orders</p>
             <div className="flex justify-center items-center">
@@ -355,14 +347,6 @@ export default function Orders() {
                     <p className="text-xl">
                       Number of orders: {ordersData.length}
                     </p>
-
-                    {/* <button
-                      className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                      type="submit"
-                      onClick={handleAdd}
-                    >
-                      Add
-                    </button> */}
                   </div>
                   <Form form={form} component={false}>
                     <Table
