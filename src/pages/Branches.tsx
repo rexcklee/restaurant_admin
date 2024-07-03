@@ -65,13 +65,6 @@ export default function Branches() {
           <div className="bg-white p-4 shadow-md rounded-xl ">
             <div className="flex justify-between">
               <p className="text-3xl font-bold ">Branches</p>
-              <button
-                className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="submit"
-                onClick={handleOpen}
-              >
-                Add
-              </button>
             </div>
             <div className="flex justify-center items-center">
               {branchesData && (
@@ -80,6 +73,13 @@ export default function Branches() {
                     <p className="text-xl">
                       Number of branches: {branchesData.length}
                     </p>
+                    <button
+                      className="w-20 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 rounded focus:outline-none focus:shadow-outline"
+                      type="submit"
+                      onClick={handleOpen}
+                    >
+                      Add
+                    </button>
                   </div>
                   <BranchesTable
                     branchesData={branchesData}

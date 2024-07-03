@@ -9,6 +9,7 @@ import AdminUsers from "../pages/AdminUsers";
 import Branches from "../pages/Branches";
 import Customers from "../pages/Customers";
 import Orders from "../pages/Orders";
+import Blog from "../pages/News";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -58,6 +59,10 @@ const Routes = () => {
         {
           path: "/orders",
           element: <Orders />,
+        },
+        {
+          path: "/news",
+          element: <Blog />,
         },
         {
           path: "/logout",

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import CustomerAPI, { Customer } from "../apis/customer";
-import UserTable from "../components/userTable";
 import { Sidebar } from "../components/sidebar";
 import {
   Button,
@@ -10,7 +9,6 @@ import {
   CardFooter,
   Typography,
   Input,
-  Checkbox,
 } from "@material-tailwind/react";
 import CustomerTable from "../components/customerTable";
 
@@ -28,7 +26,7 @@ export default function Customers() {
     last_login: null,
     payment_method: "",
   });
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
   const [tableUpdate, setTableUpdate] = useState(false);
 
   const [open, setOpen] = useState(false);
@@ -70,7 +68,7 @@ export default function Customers() {
                       Number of customer: {customersData.length}
                     </p>
                     <button
-                      className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      className="w-20 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 rounded focus:outline-none focus:shadow-outline"
                       type="submit"
                       onClick={handleOpen}
                     >

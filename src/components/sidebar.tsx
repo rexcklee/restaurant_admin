@@ -109,11 +109,11 @@ export function Sidebar() {
           </ListItemPrefix>
           Customers
         </ListItem>
-        <ListItem className="text-sm">
+        <ListItem className="text-sm" onClick={() => handleNavigation("/news")}>
           <ListItemPrefix>
             <Cog6ToothIcon className="h-3 w-3" />
           </ListItemPrefix>
-          Settings
+          Blogs
         </ListItem>
         <ListItem className="text-sm" onClick={handleLogout}>
           <ListItemPrefix>
