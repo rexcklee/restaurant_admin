@@ -14,11 +14,6 @@ class API {
   //apiHost: string = "http://localhost:3001";
   apiHost: string = "https://rexlee.space:444";
 
-  constructor() {
-    //this.apiHost = "http://localhost:3001";
-    this.apiHost = "https://rexlee.space:444";
-  }
-
   protected async get(
     path: string,
     isProtected: boolean = false
@@ -111,7 +106,9 @@ class API {
 
     if (isProtected) {
       const token = this.getToken();
-      if (token === "") throw new Error("Token is empty");
+      if (token === "") {
+        throw new Error("Token is empty");
+      }
       headers.Authorization = "Bearer " + token;
     }
 

@@ -178,7 +178,7 @@ export default function ProductTable(props: ProductTableComponentProps) {
                   {product.image_id != "" ? (
                     <div className="flex items-center">
                       <img
-                        className="m-auto block"
+                        className="m-auto block max-h-24"
                         src={`https://drive.google.com/thumbnail?id=${product.image_id}&sz=w120`}
                         alt="Network Image"
                       />
@@ -286,10 +286,8 @@ export default function ProductTable(props: ProductTableComponentProps) {
                   )}
                 </td>
 
-                <td
-                  className={`${classes} bg-blue-gray-50/50 flex justify-center items-center`}
-                >
-                  <div className="flex space-x-2">
+                <td className={`${classes} bg-blue-gray-50/50`}>
+                  <div className="flex justify-center space-x-2">
                     {editableProductId === product.product_id ? (
                       <Typography
                         as="a"

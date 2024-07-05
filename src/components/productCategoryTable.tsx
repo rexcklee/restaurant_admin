@@ -137,10 +137,8 @@ export default function ProductCategoryTable(
                     </Typography>
                   )}
                 </td>
-                <td
-                  className={`${classes} bg-blue-gray-50/50 flex justify-center items-center`}
-                >
-                  <div className="flex space-x-2">
+                <td className={`${classes} bg-blue-gray-50/50 `}>
+                  <div className="flex justify-center items-center space-x-2">
                     {editableCategoryId === category.category_id ? (
                       <Typography
                         as="a"

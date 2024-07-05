@@ -10,7 +10,6 @@ import {
   Switch,
   Table,
   Typography,
-  Select,
 } from "antd";
 import { format } from "date-fns";
 
@@ -23,7 +22,6 @@ import {
   Dialog,
 } from "@material-tailwind/react";
 import GoogleAPI from "../apis/google";
-import TextArea from "antd/es/input/TextArea";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
@@ -66,7 +64,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   ...restProps
 }) => {
   let inputNode;
-  const { TextArea } = Input;
 
   if (inputType === "number") {
     inputNode = <InputNumber min="0" />;
@@ -151,21 +148,7 @@ export default function Blog() {
     isshow: false,
     sort: 0,
   });
-  // const [count, setCount] = useState(0);
-  // const handleAdd = () => {
-  //   const newData: News = {
-  //     key: count,
-  //     news_id: 0,
-  //     news_title: "",
-  //     news_content: "",
-  //     image_id: "",
-  //     create_date: null,
-  //     isshow: false,
-  //     sort: 0,
-  //   };
-  //   setNewsData([...newsData!, newData]);
-  //   setCount(count + 1);
-  // };
+
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -270,8 +253,8 @@ export default function Blog() {
       dataIndex: "isshow",
       key: "isshow",
       editable: true,
-      render: (text: boolean) =>
-        text === false ? (
+      render: (text: boolean | number) =>
+        text === false || text === 0 ? (
           <XCircleIcon className="h-5 w-5 text-red-300" />
         ) : (
           <CheckCircleIcon className="h-5 w-5 text-green-300" />
@@ -379,14 +362,15 @@ export default function Blog() {
     <>
       <div className="flex h-screen bg-blue-gray-50">
         <Sidebar />
-        {/* Table in a card on right */}
+
+        {/* Table */}
         <div className="p-4 w-full relative overflow-x-auto overflow-y-auto">
           <div className="bg-white p-4 shadow-md rounded-xl ">
             <p className="text-3xl font-bold ">Blogs</p>
             <div className="flex justify-center items-center">
               {newsData && (
                 <div className="w-full overflow-x-auto">
-                  <div className="flex items-end justify-between">
+                  <div className="flex items-end justify-between mb-4">
                     <p className="text-xl">Number of blog: {newsData.length}</p>
                     <button
                       className="w-20 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 rounded focus:outline-none focus:shadow-outline"
@@ -397,13 +381,6 @@ export default function Blog() {
                     </button>
                   </div>
 
-                  {/* <Button
-                    onClick={handleAdd}
-                    type="primary"
-                    style={{ marginBottom: 16 }}
-                  >
-                    Add a row
-                  </Button> */}
                   <Form form={form} component={false}>
                     <Table
                       components={{
@@ -426,6 +403,7 @@ export default function Blog() {
           </div>
         </div>
       </div>
+
       {/* Dialog for Upload Image */}
       <Dialog
         size="xs"
@@ -458,6 +436,7 @@ export default function Blog() {
           </CardBody>
         </Card>
       </Dialog>
+
       {/* Dialog for Add Blogs */}
       <Dialog
         size="xs"

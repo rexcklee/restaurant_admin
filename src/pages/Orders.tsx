@@ -12,6 +12,7 @@ import {
   Typography,
 } from "antd";
 import { format } from "date-fns";
+import moment from "moment";
 
 import OrderAPI, { Order, OrderItem } from "../apis/order";
 
@@ -89,21 +90,7 @@ export default function Orders() {
     null
   );
 
-  const [orderColumnsData, setOrderColumnsData] = useState<string[] | null>(
-    null
-  );
-
   const order = new OrderAPI();
-
-  const handleSubmit = () => {
-    // order.createOrder(newOrderData!).then(() => {
-    //   handleOpen();
-    // });
-  };
-
-  //   const handleForceUpdate = () => {
-  //     setTableUpdate((prev) => !prev); // Toggle the state to force re-render
-  //   };
 
   useEffect(() => {
     order
@@ -118,14 +105,7 @@ export default function Orders() {
       .catch((error) => {
         console.error(error);
       });
-    order
-      .orderTableColumns()
-      .then((response) => {
-        setOrderColumnsData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+
     order
       .orderItemsList()
       .then((response) => {
@@ -154,6 +134,8 @@ export default function Orders() {
       dataIndex: "order_date",
       key: "order_date",
       editable: false,
+      sorter: (a: any, b: any) =>
+        moment(a.order_date).unix() - moment(b.order_date).unix(),
       render: (text: string) => format(new Date(text), "dd-MM-yyyy HH:mm"),
     },
     { title: "Amount", dataIndex: "total_amount", key: "total_amount" },
@@ -175,18 +157,6 @@ export default function Orders() {
       key: "shipping_address",
       editable: true,
     },
-    // {
-    //   title: "billing_address",
-    //   dataIndex: "billing_address",
-    //   key: "billing_address",
-    //   editable: true,
-    // },
-    // {
-    //   title: "payment_method",
-    //   dataIndex: "payment_method",
-    //   key: "payment_method",
-    //   editable: true,
-    // },
     {
       title: "Payment",
       dataIndex: "payment_status",
@@ -232,28 +202,11 @@ export default function Orders() {
 
   const expandedRowRender = (record: Order) => {
     const columns: TableColumnsType<OrderItem> = [
-      //   { title: "Item ID", dataIndex: "order_item_id", key: "order_item_id" },
-      //   { title: "order_number", dataIndex: "order_number", key: "order_number" },
       { title: "Product#", dataIndex: "product_id", key: "product_id" },
       { title: "Product", dataIndex: "product_name", key: "product_name" },
       { title: "Qty.", dataIndex: "quantity", key: "quantity" },
       { title: "Unit Price", dataIndex: "unit_price", key: "unit_price" },
       { title: "Total Price", dataIndex: "total_price", key: "total_price" },
-      //   {
-      //     title: "Action",
-      //     key: "operation",
-      //     render: () => (
-      //       <Space size="middle">
-      //         <a>Pause</a>
-      //         <a>Stop</a>
-      //         {/* <Dropdown menu={{ items }}>
-      //           <a>
-      //             More
-      //           </a>
-      //         </Dropdown> */}
-      //       </Space>
-      //     ),
-      //   },
     ];
 
     return (
@@ -326,6 +279,7 @@ export default function Orders() {
         record,
         inputType: col.dataIndex === "age" ? "number" : "text",
         dataIndex: col.dataIndex,
+
         title: col.title,
         editing: isEditing(record),
       }),
@@ -343,7 +297,7 @@ export default function Orders() {
             <div className="flex justify-center items-center">
               {ordersData && (
                 <div className="w-full overflow-x-auto">
-                  <div className="flex items-end justify-between">
+                  <div className="flex items-end justify-between mb-4">
                     <p className="text-xl">
                       Number of orders: {ordersData.length}
                     </p>
