@@ -124,9 +124,9 @@ export default function Orders() {
       editable: false,
     },
     {
-      title: "Customer#",
-      dataIndex: "customer_id",
-      key: "customer_id",
+      title: "Customer",
+      dataIndex: "first_name",
+      key: "first_name",
       editable: false,
     },
     {

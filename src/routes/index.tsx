@@ -10,6 +10,7 @@ import Branches from "../pages/Branches";
 import Customers from "../pages/Customers";
 import Orders from "../pages/Orders";
 import Blog from "../pages/News";
+import HomePageSections from "../pages/HomePageSections";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -59,6 +60,10 @@ const Routes = () => {
         {
           path: "/orders",
           element: <Orders />,
+        },
+        {
+          path: "/homeSections",
+          element: <HomePageSections />,
         },
         {
           path: "/news",

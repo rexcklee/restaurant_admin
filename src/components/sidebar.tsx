@@ -7,7 +7,11 @@ import {
 } from "@material-tailwind/react";
 import { BsShop, BsLaptop, BsListCheck } from "react-icons/bs";
 import { MdOutlineCategory } from "react-icons/md";
-import { IoFastFoodOutline, IoPersonOutline } from "react-icons/io5";
+import {
+  IoFastFoodOutline,
+  IoPersonOutline,
+  IoHomeOutline,
+} from "react-icons/io5";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { TbBrandBlogger } from "react-icons/tb";
 import { GrUserAdmin } from "react-icons/gr";
@@ -94,6 +98,15 @@ export function Sidebar() {
             <IoPersonOutline className="h-3 w-3" />
           </ListItemPrefix>
           Customers
+        </ListItem>
+        <ListItem
+          className="text-sm"
+          onClick={() => handleNavigation("/homeSections")}
+        >
+          <ListItemPrefix>
+            <IoHomeOutline className="h-3 w-3" />
+          </ListItemPrefix>
+          Home Sections
         </ListItem>
         <ListItem className="text-sm" onClick={() => handleNavigation("/news")}>
           <ListItemPrefix>
