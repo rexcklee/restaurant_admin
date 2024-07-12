@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { format } from "date-fns";
 
-import NewsAPI, { News } from "../apis/news";
+import { News } from "../apis/news";
 import {
   Button,
   Card,
