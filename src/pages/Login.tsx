@@ -22,7 +22,7 @@ export default function Login() {
       if (res.code === 200) {
         setToken(res.data.token);
         console.log(res.data.currentUser);
-        navigate("/products", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else {
         setError("Invalid email or password");
         console.log(res.message);
