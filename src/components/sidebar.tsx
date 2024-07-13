@@ -39,7 +39,10 @@ export function Sidebar() {
         </Typography>
       </div>
       <List>
-        <ListItem className="text-sm">
+        <ListItem
+          className="text-sm"
+          onClick={() => handleNavigation("/dashboard")}
+        >
           <ListItemPrefix>
             <BsLaptop className="h-3 w-3" />
           </ListItemPrefix>

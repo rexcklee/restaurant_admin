@@ -11,6 +11,7 @@ import Customers from "../pages/Customers";
 import Orders from "../pages/Orders";
 import Blog from "../pages/News";
 import HomePageSections from "../pages/HomePageSections";
+import Dashboard from "../pages/Dashboard";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -36,6 +37,10 @@ const Routes = () => {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/dashboard",
+          element: <Dashboard />,
         },
         {
           path: "/branches",
