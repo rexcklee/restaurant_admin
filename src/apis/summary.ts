@@ -4,7 +4,7 @@ export interface Summary {
   order_number_total: number;
   order_number_in_a_year: { month: string; order_no: number }[];
   order_amount_total: string;
-  order_amount_in_a_year: { month: string; total_amount: string }[];
+  order_amount_in_a_year: { month: string; total_amount: number }[];
   top5_products: { sold: number; product_id: number; product_name: string }[];
   customer_number: number;
 }
