@@ -14,8 +14,12 @@ import {
 import ProductAPI, { Product } from "../apis/product";
 import ProductTable from "../components/productTable";
 import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Products() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [productCategoriesData, setProductCategoriesData] = useState<
     ProductCategory[] | null
   >(null);
@@ -59,6 +63,10 @@ export default function Products() {
     product
       .productList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         setProductsData(response.data);
       })
       .catch((error) => {

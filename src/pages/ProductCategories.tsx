@@ -12,8 +12,12 @@ import {
 
 import ProductCategoryAPI, { ProductCategory } from "../apis/product_category";
 import ProductCategoryTable from "../components/productCategoryTable";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductCategories() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [productCategoriesData, setProductCategoriesData] = useState<
     ProductCategory[] | null
   >(null);
@@ -45,6 +49,10 @@ export default function ProductCategories() {
     productCategory
       .productCategoryList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         setProductCategoriesData(response.data);
       })
       .catch((error) => {

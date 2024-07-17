@@ -11,8 +11,12 @@ import {
   Input,
 } from "@material-tailwind/react";
 import CustomerTable from "../components/customerTable";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Customers() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [customersData, setCustomersData] = useState<Customer[] | null>(null);
   const [newCustomerData, setNewCustomerData] = useState<Customer | null>({
     customer_id: 0,
@@ -45,6 +49,10 @@ export default function Customers() {
   useEffect(() => {
     Customer.customerList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         setCustomersData(response.data);
       })
       .catch((error) => {

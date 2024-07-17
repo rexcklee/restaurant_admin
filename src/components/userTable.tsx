@@ -194,7 +194,7 @@ export default function UserTable(props: UserTableComponentProps) {
                     </Typography>
                   )}
                 </td>
-                <td className={`${classes} flex justify-center items-center`}>
+                <td className={`${classes}`}>
                   {editableUserId === user.admin_id ? (
                     <Checkbox
                       // label="Auto"
@@ -206,21 +206,17 @@ export default function UserTable(props: UserTableComponentProps) {
                             prevUserData!.is_superadmin == 0 ? 1 : 0,
                         }))
                       }
-                      className="checked:bg-green-300 checked:border-orange-500 border-orange-300"
+                      className="checked:bg-green-300 checked:border-orange-500 border-orange-300 border-2"
                       crossOrigin={undefined}
                     />
                   ) : (
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
+                    <div className="flex items-center justify-center">
                       {user.is_superadmin ? (
                         <CheckCircleIcon className="h-5 w-5 text-green-300" />
                       ) : (
                         <XCircleIcon className="h-5 w-5 text-gray-500" />
                       )}
-                    </Typography>
+                    </div>
                   )}
                 </td>
                 <td className={classes}>

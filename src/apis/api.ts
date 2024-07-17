@@ -73,17 +73,32 @@ class API {
     }
 
     return fetch(url, fetchOptions)
-      .then((res) => res.json())
-      .then((res: DataResponse) => {
-        if (res.code === 200) {
-          return res;
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else if (res.status === 403) {
+          return { code: 403, message: "Forbidden" };
         } else {
-          if (res.code === 401) {
-            return res;
-          }
           throw new Error("API call failed");
         }
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
+    // .then((res: DataResponse) => {
+    //   if (res.code === 200) {
+    //     return res;
+    //   } else {
+    //     if (res.code === 403) {
+    //       //return res;
+    //       console.log("This is 403");
+    //     }
+    //     if (res.code === 401) {
+    //       return res;
+    //     }
+    //     throw new Error("API call failed");
+    //   }
+    // });
   }
 
   private async apiCallFile(
@@ -122,17 +137,29 @@ class API {
     }
 
     return fetch(url, fetchOptions)
-      .then((res) => res.json())
-      .then((res: DataResponse) => {
-        if (res.code === 200) {
-          return res;
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else if (res.status === 403) {
+          return { code: 403, message: "Forbidden" };
         } else {
-          if (res.code === 401) {
-            return res;
-          }
           throw new Error("API call failed");
         }
+      })
+      .catch((err) => {
+        throw new Error(err);
       });
+    // .then((res) => res.json())
+    // .then((res: DataResponse) => {
+    //   if (res.code === 200) {
+    //     return res;
+    //   } else {
+    //     if (res.code === 401) {
+    //       return res;
+    //     }
+    //     throw new Error("API call failed");
+    //   }
+    // });
   }
 
   // Method getToken needs to be defined

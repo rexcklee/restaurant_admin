@@ -12,8 +12,12 @@ import {
 
 import BranchesTable from "../components/branchesTable";
 import BranchAPI, { Branch } from "../apis/branch";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Branches() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [branchesData, setBranchesData] = useState<Branch[] | null>(null);
 
   const [newBranchData, setNewBranchData] = useState<Branch | null>({
@@ -49,6 +53,10 @@ export default function Branches() {
     branch
       .branchList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         setBranchesData(response.data);
       })
       .catch((error) => {

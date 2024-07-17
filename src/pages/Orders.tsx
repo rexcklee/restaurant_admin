@@ -15,6 +15,8 @@ import { format } from "date-fns";
 import moment from "moment";
 
 import OrderAPI, { Order, OrderItem } from "../apis/order";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -84,6 +86,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 export default function Orders() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [ordersData, setOrdersData] = useState<Order[] | null>(null);
 
   const [orderItemsData, setOrderItemsData] = useState<OrderItem[] | null>(
@@ -96,6 +100,10 @@ export default function Orders() {
     order
       .orderList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         const updatedData = response.data.map((item: Order, index: number) => ({
           ...item,
           key: index.toString(),

@@ -26,6 +26,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import HomeSectionsAPI, { HomeSection } from "../apis/homeSections";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 // Custom toolbar configuration
 const modules = {
@@ -99,6 +101,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 export default function HomePageSections() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [homeSectionsData, setHomeSectionsData] = useState<
     HomeSection[] | null
   >(null);
@@ -176,6 +180,10 @@ export default function HomePageSections() {
     homeSections
       .homeSectionsList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         const updatedData = response.data.map(
           (item: HomeSection, index: number) => ({
             ...item,

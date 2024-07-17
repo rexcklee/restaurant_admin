@@ -25,6 +25,8 @@ import GoogleAPI from "../apis/google";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 // Custom toolbar configuration
 const modules = {
@@ -104,6 +106,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 export default function Blog() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [newsData, setNewsData] = useState<News[] | null>(null);
 
   const news = new NewsAPI();
@@ -176,6 +180,10 @@ export default function Blog() {
     news
       .newsList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         const updatedData = response.data.map((item: News, index: number) => ({
           ...item,
           key: index.toString(),

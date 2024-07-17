@@ -12,8 +12,12 @@ import {
   Input,
   Checkbox,
 } from "@material-tailwind/react";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminUsers() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [usersData, setUserData] = useState<AdminUser[] | null>(null);
   const [newUserData, setNewUserData] = useState<AdminUser | null>({
     admin_id: 0,
@@ -45,6 +49,10 @@ export default function AdminUsers() {
     adminUser
       .adminUserList()
       .then((response) => {
+        if (response.code === 403) {
+          setToken(null);
+          navigate("/", { replace: true });
+        }
         setUserData(response.data);
       })
       .catch((error) => {

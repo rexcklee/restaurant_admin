@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "../components/sidebar";
 import SummaryAPI, { Summary } from "../apis/summary";
 import { Line } from "@ant-design/charts";
+import { useAuth } from "../provider/authProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [summaryData, setSummaryData] = useState<Summary | null>(null);
   const summary = new SummaryAPI();
   const [orderAmountConfig, setOrderAmountConfig] = useState<{
@@ -89,21 +93,28 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    summary
-      .getSummary()
-      .then((response) => {
-        setSummaryData(response.data);
-        console.log(response.data.order_amount_in_a_year);
-        setOrderAmountConfig((prevConfig) => ({
-          ...prevConfig,
-          data: response.data.order_amount_in_a_year,
-        }));
-        setOrderNumberConfig((prevConfig) => ({
-          ...prevConfig,
-          data: response.data.order_number_in_a_year,
-        }));
-      })
-      .catch((err) => console.log(err));
+    const token = localStorage.getItem("token");
+    if (token) {
+      summary
+        .getSummary()
+        .then((response) => {
+          if (response.code === 403) {
+            setToken(null);
+            navigate("/", { replace: true });
+          }
+          setSummaryData(response.data);
+          console.log(response.data.order_amount_in_a_year);
+          setOrderAmountConfig((prevConfig) => ({
+            ...prevConfig,
+            data: response.data.order_amount_in_a_year,
+          }));
+          setOrderNumberConfig((prevConfig) => ({
+            ...prevConfig,
+            data: response.data.order_number_in_a_year,
+          }));
+        })
+        .catch((err) => console.log(err));
+    }
   }, []);
   return (
     <div className="flex h-screen bg-blue-gray-50">

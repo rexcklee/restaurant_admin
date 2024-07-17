@@ -7,20 +7,26 @@ import AuthAPI from "../apis/auth";
 import { Card } from "@material-tailwind/react";
 
 export default function Login() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setToken } = useAuth();
-  const navigate = useNavigate();
 
   const authUser = new AuthAPI();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const checkTokenExpiration = () => {
+      setToken(null);
+      navigate("/", { replace: true });
+    };
+
     authUser.login(email, password).then((res) => {
       if (res.code === 200) {
         setToken(res.data.token);
+        setTimeout(checkTokenExpiration, res.data.expire_in * 1000);
         console.log(res.data.currentUser);
         navigate("/dashboard", { replace: true });
       } else {
