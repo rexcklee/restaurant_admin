@@ -21,6 +21,7 @@ export default function Login() {
     const checkTokenExpiration = () => {
       setToken(null);
       navigate("/", { replace: true });
+      alert("Your session has expired. Please log in again.");
     };
 
     authUser.login(email, password).then((res) => {

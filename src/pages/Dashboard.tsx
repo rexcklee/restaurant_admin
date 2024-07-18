@@ -10,6 +10,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [summaryData, setSummaryData] = useState<Summary | null>(null);
   const summary = new SummaryAPI();
+  const [tokenReady, setTokenReady] = useState(false);
   const [orderAmountConfig, setOrderAmountConfig] = useState<{
     data: OrderAmountInAYear[] | null;
     height: number;
@@ -95,27 +96,37 @@ export default function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      summary
-        .getSummary()
-        .then((response) => {
-          if (response.code === 403) {
-            setToken(null);
-            navigate("/", { replace: true });
-          }
-          setSummaryData(response.data);
-          console.log(response.data.order_amount_in_a_year);
-          setOrderAmountConfig((prevConfig) => ({
-            ...prevConfig,
-            data: response.data.order_amount_in_a_year,
-          }));
-          setOrderNumberConfig((prevConfig) => ({
-            ...prevConfig,
-            data: response.data.order_number_in_a_year,
-          }));
-        })
-        .catch((err) => console.log(err));
+      setTokenReady(true);
     }
-  }, []);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (tokenReady) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        summary
+          .getSummary()
+          .then((response) => {
+            if (response.code === 403) {
+              setToken(null);
+              navigate("/", { replace: true });
+            }
+            setSummaryData(response.data);
+            console.log(response.data.order_amount_in_a_year);
+            setOrderAmountConfig((prevConfig) => ({
+              ...prevConfig,
+              data: response.data.order_amount_in_a_year,
+            }));
+            setOrderNumberConfig((prevConfig) => ({
+              ...prevConfig,
+              data: response.data.order_number_in_a_year,
+            }));
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  }, [tokenReady, navigate]);
+
   return (
     <div className="flex h-screen bg-blue-gray-50">
       <Sidebar />
