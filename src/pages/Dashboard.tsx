@@ -119,7 +119,7 @@ export default function Dashboard() {
           .catch((err) => console.log(err));
       }
     };
-    const intervalId = setInterval(checkToken, 500); // Check every 500ms
+    const intervalId = setInterval(checkToken, 100); // Check every 100ms
     return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   }, []);
 
