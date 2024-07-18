@@ -10,7 +10,6 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [summaryData, setSummaryData] = useState<Summary | null>(null);
   const summary = new SummaryAPI();
-  const [tokenReady, setTokenReady] = useState(false);
   const [orderAmountConfig, setOrderAmountConfig] = useState<{
     data: OrderAmountInAYear[] | null;
     height: number;
@@ -94,16 +93,11 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setTokenReady(true);
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    if (tokenReady) {
+    const checkToken = () => {
+      console.log("looploop");
       const token = localStorage.getItem("token");
       if (token) {
+        clearInterval(intervalId);
         summary
           .getSummary()
           .then((response) => {
@@ -124,8 +118,10 @@ export default function Dashboard() {
           })
           .catch((err) => console.log(err));
       }
-    }
-  }, [tokenReady, navigate]);
+    };
+    const intervalId = setInterval(checkToken, 500); // Check every 500ms
+    return () => clearInterval(intervalId); // Cleanup the interval on component unmount
+  }, []);
 
   return (
     <div className="flex h-screen bg-blue-gray-50">
