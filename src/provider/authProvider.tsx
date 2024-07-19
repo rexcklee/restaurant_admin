@@ -11,6 +11,8 @@ import {
 interface AuthContextValue {
   token: string | null;
   setToken: (newToken: string | null) => void;
+  currentUser: string | null;
+  setCurrentUser: (newCurrentUser: string | null) => void;
 }
 
 // Create the AuthContext with the specified type
@@ -22,9 +24,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.getItem("token")
   );
 
+  const [currentUser, setCurrentUser_] = useState<string | null>(
+    JSON.parse(localStorage.getItem("currentUser")!)
+  );
+
   // Function to set the authentication token
   const setToken = (newToken: string | null) => {
     setToken_(newToken);
+  };
+
+  const setCurrentUser = (newCurrentUser: string | null) => {
+    setCurrentUser_(newCurrentUser);
   };
 
   useEffect(() => {
@@ -33,13 +43,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       localStorage.removeItem("token");
     }
-  }, [token]);
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [token, currentUser]);
 
   // Memoized value of the authentication context
   const contextValue = useMemo(
     () => ({
       token,
       setToken,
+      currentUser,
+      setCurrentUser,
     }),
     [token]
   );

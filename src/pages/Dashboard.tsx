@@ -94,7 +94,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     const checkToken = () => {
-      console.log("looploop");
       const token = localStorage.getItem("token");
       if (token) {
         clearInterval(intervalId);
@@ -106,7 +105,6 @@ export default function Dashboard() {
               navigate("/", { replace: true });
             }
             setSummaryData(response.data);
-            console.log(response.data.order_amount_in_a_year);
             setOrderAmountConfig((prevConfig) => ({
               ...prevConfig,
               data: response.data.order_amount_in_a_year,
