@@ -102,6 +102,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 export default function HomePageSections() {
   const selectImageRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | null
   >(null);
@@ -159,6 +160,7 @@ export default function HomePageSections() {
 
   const handleSelectImageClose = () => {
     setSelectedImage(null);
+    setFiles(null);
     setOpen((cur) => !cur);
   };
 
@@ -175,7 +177,7 @@ export default function HomePageSections() {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setUploading(true);
     if (!files) {
       return;
     }
@@ -196,7 +198,9 @@ export default function HomePageSections() {
       });
 
       setOpen((cur) => !cur);
+      setUploading(false);
       setSelectedImage(null);
+      setFiles(null);
     });
   };
 
@@ -289,9 +293,13 @@ export default function HomePageSections() {
       editable: true,
       render: (text: boolean | number) =>
         text === false || text === 0 ? (
-          <XCircleIcon className="h-5 w-5 text-red-300" />
+          <div className="flex items-center justify-center">
+            <XCircleIcon className="h-5 w-5 text-red-300" />
+          </div>
         ) : (
-          <CheckCircleIcon className="h-5 w-5 text-green-300" />
+          <div className="flex items-center justify-center">
+            <CheckCircleIcon className="h-5 w-5 text-green-300" />
+          </div>
         ),
     },
     {
@@ -484,8 +492,8 @@ export default function HomePageSections() {
                 <Button type="button" onClick={handleSelectImageClick}>
                   Select Image
                 </Button>
-                <Button type="submit" disabled={!files}>
-                  Upload
+                <Button type="submit" disabled={!files || uploading}>
+                  {uploading ? "Uploading..." : "Upload"}
                 </Button>
               </div>
             </form>
