@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "../components/sidebar";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import type { TableProps } from "antd";
@@ -101,6 +101,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 export default function HomePageSections() {
+  const selectImageRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<
+    string | ArrayBuffer | null
+  >(null);
   const { setToken } = useAuth();
   const navigate = useNavigate();
   const [homeSectionsData, setHomeSectionsData] = useState<
@@ -120,10 +124,22 @@ export default function HomePageSections() {
   const handleOpenAddHomeSection = () => setOpenAddHomeSection((cur) => !cur);
   const [editingNewsId, setEditingNewsId] = useState<number | null>(null);
   const google = new GoogleAPI();
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+
+    if (!event.target.files) {
+      setSelectedImage(null);
+      return;
+    }
     if (event.target.files) {
+      fileReader.readAsDataURL(event.target.files[0]);
       setFiles(event.target.files);
     }
+
+    fileReader.onload = () => {
+      setSelectedImage(fileReader.result);
+    };
   };
 
   const handleDeleteImage = (currentHomeSection: HomeSection) => {
@@ -141,6 +157,11 @@ export default function HomePageSections() {
     setOpen((cur) => !cur);
   };
 
+  const handleSelectImageClose = () => {
+    setSelectedImage(null);
+    setOpen((cur) => !cur);
+  };
+
   const [newHomeSectionData, setNewHomeSectionData] = useState<HomeSection>({
     key: "0",
     homeSection_id: 0,
@@ -155,7 +176,9 @@ export default function HomePageSections() {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!files) return;
+    if (!files) {
+      return;
+    }
 
     const formData = new FormData();
 
@@ -173,6 +196,7 @@ export default function HomePageSections() {
       });
 
       setOpen((cur) => !cur);
+      setSelectedImage(null);
     });
   };
 
@@ -195,7 +219,7 @@ export default function HomePageSections() {
       .catch((error) => {
         console.error(error);
       });
-  }, [open, openAddHomeSection]);
+  }, [open, openAddHomeSection, homeSectionsData]);
 
   const columns = [
     {
@@ -368,6 +392,10 @@ export default function HomePageSections() {
     };
   });
 
+  function handleSelectImageClick() {
+    selectImageRef.current!.click();
+  }
+
   return (
     <>
       <div className="flex h-screen bg-blue-gray-50">
@@ -420,7 +448,7 @@ export default function HomePageSections() {
       <Dialog
         size="xs"
         open={open}
-        handler={handleOpen}
+        handler={handleSelectImageClose}
         className="bg-transparent shadow-none"
       >
         <Card className="mx-auto w-full ">
@@ -432,14 +460,30 @@ export default function HomePageSections() {
               onSubmit={handleFormSubmit}
               encType="multipart/form-data"
             >
-              <div className="flex items-center justify-center">
+              <div className="w-full text-center border border-gray-500 rounded mb-4">
+                {!selectedImage && <p>No Image selected</p>}
+                {selectedImage && (
+                  <img
+                    src={`${selectedImage}`}
+                    alt="Select an image"
+                    className="fill"
+                  />
+                )}
+              </div>
+              <div className="flex items-center justify-between">
                 <input
+                  className="hidden"
                   type="file"
                   name="file"
                   id="fileInput"
+                  accept="image/png, image/jpeg"
+                  ref={selectImageRef}
                   // multiple
                   onChange={handleFileChange}
                 />
+                <Button type="button" onClick={handleSelectImageClick}>
+                  Select Image
+                </Button>
                 <Button type="submit" disabled={!files}>
                   Upload
                 </Button>
