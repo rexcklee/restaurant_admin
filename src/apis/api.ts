@@ -12,7 +12,6 @@ class DataResponse {
 
 class API {
   apiHost: string = import.meta.env.VITE_API_URL;
-  // apiHost: string = "https://restaurant-server.rexlee.space";
 
   protected async get(
     path: string,
