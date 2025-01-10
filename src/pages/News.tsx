@@ -263,9 +263,13 @@ export default function Blog() {
       editable: true,
       render: (text: boolean | number) =>
         text === false || text === 0 ? (
-          <XCircleIcon className="h-5 w-5 text-red-300" />
+          <div className="flex items-center justify-center">
+            <XCircleIcon className="h-5 w-5 text-red-300" />
+          </div>
         ) : (
-          <CheckCircleIcon className="h-5 w-5 text-green-300" />
+          <div className="flex items-center justify-center">
+            <CheckCircleIcon className="h-5 w-5 text-green-300" />
+          </div>
         ),
     },
     {
