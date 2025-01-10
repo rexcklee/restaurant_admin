@@ -20,6 +20,7 @@ export default function Login() {
 
     const checkTokenExpiration = () => {
       setToken(null);
+      setCurrentUser(null);
       navigate("/", { replace: true });
       alert("Your session has expired. Please log in again.");
     };

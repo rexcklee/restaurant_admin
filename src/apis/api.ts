@@ -11,8 +11,7 @@ class DataResponse {
 }
 
 class API {
-  //apiHost: string = "http://localhost:3001";
-  apiHost: string = "https://rexlee.space:444";
+  apiHost: string = import.meta.env.VITE_API_URL;
 
   protected async get(
     path: string,
